@@ -1,11 +1,26 @@
 import Button from '../Components/Button';
-import products from '../Data/data.json';
 import Card from '../Components/Card';
 import './Home.css';
-import { useState } from 'react';   
+import { useState } from 'react'; 
+import { useLoaderData, Outlet } from 'react-router-dom';
+  
 
+type Product = {
+    id: number;
+    name: string;
+    price: number;
+    pictureUrl: string;
+    category: string;
+};
+
+export async function productsLoader(){
+    const response = await fetch("/data/data.json");
+    const products = await response.json();
+    return products;
+}
 
 function Home(){
+    const products = useLoaderData() as Product[];
 
     const [filteredProducts, setFilteredProducts] = useState(products);
     const [searchId, setSearchId] = useState('');
@@ -13,7 +28,7 @@ function Home(){
     function searchProduct(){
         const filtered = products.filter((product) => product.id.toString().includes(searchId));
         setFilteredProducts(filtered);
-    }
+    } 
 
 
     return(
