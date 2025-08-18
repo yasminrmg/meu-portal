@@ -1,18 +1,33 @@
-import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import Home from './Pages/Home';
+import React from 'react'
+import PrincipalLayout from './Layouts/PrincipalLayout';
+import Layout from './Layouts/PrincipalLayout';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Home, { productsLoader } from './Pages/Home';
+import NovoProduto from './Pages/NovoProduto';
+
+
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <PrincipalLayout />,
+    children:[
+      {
+        index: true,
+        element: <Home />,
+        loader: productsLoader,
+      },
+      {
+        path: '/novoProduto',
+        element: <NovoProduto />
+      }
+    ]
+  },
+]);
 
 function App() {
-  return (
-    <div className="App">
-      <header>
-      </header>
-      <main>
-        <Home/>
-      </main>
-    </div>
-  );
+  return <RouterProvider router={router} />
 }
 
 export default App;

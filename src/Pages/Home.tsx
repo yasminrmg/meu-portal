@@ -1,17 +1,24 @@
 import Button from '../Components/Button';
 import Card from '../Components/Card';
 import './Home.css';
-import { useState } from 'react'; 
-import { useLoaderData, Outlet } from 'react-router-dom';
-  
+import { useState, useEffect } from 'react'; 
+import { useLoaderData, useOutletContext, useNavigate } from 'react-router-dom';
+
+
 
 type Product = {
     id: number;
     name: string;
+    description: string;
     price: number;
-    pictureUrl: string;
     category: string;
+    pictureUrl: string;
 };
+
+type ContextType = {
+    searchTerm: string;
+};
+
 
 export async function productsLoader(){
     const response = await fetch("/data/data.json");
@@ -21,24 +28,22 @@ export async function productsLoader(){
 
 function Home(){
     const products = useLoaderData() as Product[];
+    const {searchTerm} = useOutletContext<ContextType>();
 
     const [filteredProducts, setFilteredProducts] = useState(products);
-    const [searchId, setSearchId] = useState('');
+    const navigate = useNavigate();
 
-    function searchProduct(){
-        const filtered = products.filter((product) => product.id.toString().includes(searchId));
+    //const [searchId, setSearchId] = useState('');
+
+    useEffect(() => {
+        const filtered = products.filter((product) => product.id.toString().includes(searchTerm));
         setFilteredProducts(filtered);
-    } 
+    },[searchTerm, products]); 
 
 
     return(
         <div className='home'>
-            <div className='search-bar'>
-                <label aria-label='Produto'>Produto</label>
-                <input type='text' placeholder='Digite o nome do produto' value={searchId} onChange={(e) => setSearchId(e.target.value)}/>
-                <Button text="Pesquisar" buttonType='pesquisar' onClick={searchProduct}/>
-            </div>
-            
+            <Button text="Cadastrar novo Produto" buttonType="deletar" onClick={() => navigate("/novoProduto")} />
             <div className='products'>
                 {filteredProducts.map((product) => (
                     <Card

@@ -1,0 +1,38 @@
+.form-produto label {
+    padding-top: 15px;
+}
+
+.formProduto-container {
+    display: flex;
+    justify-content: center;  
+    align-items: center;      
+    min-height: 80vh;
+}
+
+.formProduto-container *{
+    font-size: 17px;
+}
+
+.form-produto {
+    display: flex;
+    flex-direction: column;               
+    width: 400px;            
+    max-width: 90%;           
+    padding: 1.5rem;
+}
+
+.form-produto label, .form-produto input, .form-produto textarea{
+    height: 2vw;
+}
+
+.form-produto textarea{
+    min-height:3vw;
+}
+
+
+.formProduto-container .button-actions{
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+
+}

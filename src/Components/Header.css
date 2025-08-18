@@ -1,0 +1,25 @@
+.Header nav {
+    display: flex;
+    justify-content: space-between;
+    padding: 2rem;
+    width: auto;
+    flex-direction: row;
+    height: 5rem;
+    align-items: center;
+}
+
+.Logo{
+    width: 20vw;
+}
+
+.Logo img{
+    width: 8vw;
+}
+
+.content-header{
+    width: 80vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-self: center;
+}
