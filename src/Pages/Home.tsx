@@ -1,8 +1,8 @@
 import Button from '../Components/Button';
 import Card from '../Components/Card';
 import './Home.css';
-import { useState, useEffect } from 'react'; 
-import { useLoaderData, useOutletContext, useNavigate } from 'react-router-dom';
+import { useState, useEffect} from 'react'; 
+import { useLoaderData, useOutletContext, useNavigate, useLocation } from 'react-router-dom';
 
 
 
@@ -30,15 +30,26 @@ function Home(){
     const products = useLoaderData() as Product[];
     const {searchTerm} = useOutletContext<ContextType>();
 
-    const [filteredProducts, setFilteredProducts] = useState(products);
+    const [productList, setProductList] = useState<Product[]>(products);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
     const navigate = useNavigate();
-
+    const location = useLocation();
     //const [searchId, setSearchId] = useState('');
 
     useEffect(() => {
-        const filtered = products.filter((product) => product.id.toString().includes(searchTerm));
+        const filtered = productList.filter((product) => product.id.toString().includes(searchTerm));
         setFilteredProducts(filtered);
-    },[searchTerm, products]); 
+    },[searchTerm, productList]); 
+
+    useEffect(() => {
+        if (location.state?.novoProduto) {
+            const novoProduto = location.state.novoProduto as Product;
+            setProductList(prevList => [...prevList, novoProduto]);
+            navigate(location.pathname, { replace: true, state: {} });
+        }
+    }, [location.state, navigate, location.pathname]);
+
+
 
 
     return(
