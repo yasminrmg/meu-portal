@@ -4,6 +4,7 @@ import "./NovoProduto.css";
 import { useNavigate } from "react-router";
 import { useProducts } from '../ProductsContext';
 
+
 function NovoProduto() {
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
@@ -62,6 +63,11 @@ function NovoProduto() {
     return (
         <div className="novo-produto">
             <h2>Cadastrar Novo Produto</h2>
+
+             <Button
+                text="Importar produtos CSV" buttonType="salvar" onClick={() => navigate("/uploadProdutos")}
+            />
+
             <div className="formProduto-container">
                 <form onSubmit={criarProduto} className="form-produto">
                     <label htmlFor="nome">Nome</label>

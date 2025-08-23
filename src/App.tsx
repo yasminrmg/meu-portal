@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider, useLoaderData } from 'react-router
 import Home from './Pages/Home';
 import NovoProduto from './Pages/NovoProduto';
 import { ProductsProvider, Product } from "./ProductsContext";
+import UploadProdutos from './Pages/UploadProdutos';
 
 const productsLoader = async()=>{
   const response = await fetch('/data/data.json');
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
       {
         path: '/novoProduto',
         Component: NovoProduto,
+      },
+      { 
+        path: '/uploadProdutos', 
+        Component: UploadProdutos
       }
     ]
   },

@@ -12,6 +12,10 @@ function Nav() {
       <NavLink to="/novoProduto" className={({ isActive }) => (isActive ? "active" : "")}>
         Novo Produto
       </NavLink>
+
+      <NavLink to="/uploadProdutos" className={({ isActive }) => (isActive ? "active" : "")}>
+        Upload Produtos
+      </NavLink>
     </nav>
   );
 }

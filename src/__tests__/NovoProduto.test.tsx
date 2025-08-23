@@ -11,7 +11,6 @@ jest.mock('react-router', () => ({
     useNavigate: () => mockNavigate,
 }));
 
-describe('NovoProduto', () => {
     const mockSetProducts = jest.fn();
 
     beforeEach(() => {
@@ -115,4 +114,3 @@ describe('NovoProduto', () => {
         expect(mockNavigate).toHaveBeenCalledWith('/');
         expect(mockSetProducts).not.toHaveBeenCalled();
     });
-});

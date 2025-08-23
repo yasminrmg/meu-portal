@@ -5,6 +5,7 @@ import { useOutletContext, useNavigate } from 'react-router';
 import { useProducts } from '../ProductsContext';
 import { useEffect, useMemo, useState } from 'react';
 
+
 type ContextType = {
     searchTerm: string;
 };
@@ -39,6 +40,7 @@ function Home(){
     return(
         <div className='home'>
             <Button text="Cadastrar novo Produto" buttonType="deletar" onClick={() => navigate("/novoProduto")} />
+
             <div className='products'>
                 {filteredProducts.map((product) => (
                     <Card
