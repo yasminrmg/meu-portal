@@ -1,4 +1,4 @@
-import {Outlet} from 'react-router-dom';
+import {Outlet} from 'react-router';
 import Header from '../Components/Header';
 import Nav from '../Components/Nav';
 import './PrincipalLayout.css';

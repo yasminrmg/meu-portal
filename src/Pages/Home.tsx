@@ -1,7 +1,7 @@
 import Button from '../Components/Button';
 import Card from '../Components/Card';
 import './Home.css';
-import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useOutletContext, useNavigate } from 'react-router';
 import { useProducts } from '../ProductsContext';
 import { useEffect, useMemo, useState } from 'react';
 

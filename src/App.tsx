@@ -1,8 +1,6 @@
 import './App.css';
-import React from 'react'
 import PrincipalLayout from './Layouts/PrincipalLayout';
-import Layout from './Layouts/PrincipalLayout';
-import { createBrowserRouter, RouterProvider, useLoaderData } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, useLoaderData } from 'react-router';
 import Home from './Pages/Home';
 import NovoProduto from './Pages/NovoProduto';
 import { ProductsProvider, Product } from "./ProductsContext";

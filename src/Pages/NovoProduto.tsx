@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "../Components/Button";
 import "./NovoProduto.css";
-import { useNavigate, useLocation, useLoaderData } from "react-router";
+import { useNavigate } from "react-router";
 import { useProducts } from '../ProductsContext';
 
 
