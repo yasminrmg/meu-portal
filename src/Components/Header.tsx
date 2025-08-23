@@ -1,21 +1,23 @@
-import React from "react";
 import "./Header.css";
 import Button from '../Components/Button';
-import { useState } from 'react'; 
-
+import React,{ useState, useEffect } from 'react'; 
 
 type HeaderProps = {
     onSearch: (searchTerm: string) => void;
 }
 
-
-
 function Header({onSearch}: HeaderProps) {
     const [searchId, setSearchId] = useState('');
 
-    const searchProduct = ()=>{
-        onSearch(searchId);
-    } 
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      onSearch(searchId);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchId, onSearch]);
 
   return (
     <header className="Header">
@@ -27,7 +29,6 @@ function Header({onSearch}: HeaderProps) {
             <div className='search-bar'>
                 <label aria-label='Produto'>Produto</label>
                 <input type='text' placeholder='Digite o nome do produto' value={searchId} onChange={(e) => setSearchId(e.target.value)}/>
-                <Button text="Pesquisar" buttonType='pesquisar' onClick={searchProduct}/>
             </div>
         </div>      
       </nav>

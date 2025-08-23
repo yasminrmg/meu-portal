@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import Button from "../Components/Button";
 import "./NovoProduto.css";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, useLoaderData } from "react-router";
+import { useProducts } from '../ProductsContext';
+
+
 
 function NovoProduto() {
     const [name, setName] = useState("");
@@ -9,20 +12,18 @@ function NovoProduto() {
     const [category, setCategory] = useState("");
     const [description, setDescription] = useState("");
     const [pictureUrl, setPictureUrl] = useState("");
+    
     const navigate = useNavigate();
-    const location = useLocation();
+    const { products, setProducts } = useProducts();
 
     const criarProduto = (e: React.FormEvent) => {
         e.preventDefault();
         const novoProduto = { id: Date.now(), name, price: parseFloat(price), category, description, pictureUrl: pictureUrl || "/logo192.png" };
 
-        navigate("/", { state: { novoProduto: novoProduto } });
-    };
+        setProducts((prevProducts) => [...prevProducts, novoProduto]);
+        navigate('/');
+    };    
 
-
-    const cancelar = () => {
-        navigate("/");
-    };
 
     return (
         <div className="novo-produto">
@@ -46,7 +47,7 @@ function NovoProduto() {
 
                     <div className="button-actions">
                         <Button text="Salvar Produto" buttonType="salvar" type="submit"/>
-                        <Button text="Cancelar" buttonType="cancelar" onClick={cancelar}/>
+                        <Button text="Cancelar" buttonType="cancelar" onClick={() => navigate("/")}/>
                     </div>
                 </form>
             </div>

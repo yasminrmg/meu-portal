@@ -29,12 +29,12 @@
 }
 .card-body *{
     text-align: left;
-    font-size: 16pt;
+    font-size: 1.5vw;
     font-family: 'Arial', sans-serif;
 }
 
 .card-body h4{
-    font-size: 20pt;
+    font-size: 2vw;
 }
 
 .button-action{

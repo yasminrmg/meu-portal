@@ -1,56 +1,40 @@
 import Button from '../Components/Button';
 import Card from '../Components/Card';
 import './Home.css';
-import { useState, useEffect} from 'react'; 
-import { useLoaderData, useOutletContext, useNavigate, useLocation } from 'react-router-dom';
-
-
-
-type Product = {
-    id: number;
-    name: string;
-    description: string;
-    price: number;
-    category: string;
-    pictureUrl: string;
-};
+import { useOutletContext, useNavigate } from 'react-router-dom';
+import { useProducts } from '../ProductsContext';
+import { useEffect, useMemo, useState } from 'react';
 
 type ContextType = {
     searchTerm: string;
 };
 
 
-export async function productsLoader(){
-    const response = await fetch("/data/data.json");
-    const products = await response.json();
-    return products;
-}
-
 function Home(){
-    const products = useLoaderData() as Product[];
-    const {searchTerm} = useOutletContext<ContextType>();
-
-    const [productList, setProductList] = useState<Product[]>(products);
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+    const { products } = useProducts();
+    const { searchTerm } = useOutletContext<ContextType>();
     const navigate = useNavigate();
-    const location = useLocation();
-    //const [searchId, setSearchId] = useState('');
+
+    const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
     useEffect(() => {
-        const filtered = productList.filter((product) => product.id.toString().includes(searchTerm));
-        setFilteredProducts(filtered);
-    },[searchTerm, productList]); 
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchTerm);
+        }, 500);
 
-    useEffect(() => {
-        if (location.state?.novoProduto) {
-            const novoProduto = location.state.novoProduto as Product;
-            setProductList(prevList => [...prevList, novoProduto]);
-            navigate(location.pathname, { replace: true, state: {} });
-        }
-    }, [location.state, navigate, location.pathname]);
+        return () => clearTimeout(timer);
+    }, [searchTerm]);
 
 
+    const filteredProducts = useMemo (() => {
+        const term = debouncedSearch.toLocaleLowerCase();
 
+        return products.filter((p) =>{
+            const nameMatches = p.name.toLowerCase().includes(term);
+            const idMatches = p.id.toString().includes(term);
+            return nameMatches || idMatches;
+        });
+    }, [products, debouncedSearch]);
 
     return(
         <div className='home'>

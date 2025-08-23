@@ -2,25 +2,39 @@ import './App.css';
 import React from 'react'
 import PrincipalLayout from './Layouts/PrincipalLayout';
 import Layout from './Layouts/PrincipalLayout';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-import Home, { productsLoader } from './Pages/Home';
+import { createBrowserRouter, RouterProvider, useLoaderData } from 'react-router-dom';
+import Home from './Pages/Home';
 import NovoProduto from './Pages/NovoProduto';
+import { ProductsProvider, Product } from "./ProductsContext";
 
+const productsLoader = async()=>{
+  const response = await fetch('/data/data.json');
+  const products = await response.json();
+  return products;
+}
 
+function Root() {
+  const initialProducts = useLoaderData() as Product[];
 
+  return (
+    <ProductsProvider initialProducts={initialProducts}>
+      <PrincipalLayout />
+    </ProductsProvider>
+  );
+}
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <PrincipalLayout />,
+    Component: Root,
+    loader: productsLoader,
     children:[
       {
         index: true,
-        element: <Home />,
-        loader: productsLoader,
+        Component: Home,
       },
       {
         path: '/novoProduto',
-        element: <NovoProduto />
+        Component: NovoProduto,
       }
     ]
   },
