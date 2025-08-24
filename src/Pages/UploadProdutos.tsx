@@ -61,37 +61,38 @@ function UploadProdutos() {
         setSelectedIds(newSet);
     };
 
-    const saveSelected = async () => {
-        const toSave = csvProducts.filter(p => selectedIds.has(p.id));
-        if (toSave.length === 0) {
-            setError("Selecione pelo menos um produto");
-            return;
-        }
+const saveSelected = async () => {
+    const toSave = csvProducts.filter(p => selectedIds.has(p.id));
+    if (toSave.length === 0) {
+        setError("Selecione pelo menos um produto");
+        return;
+    }
 
+    const savedProducts: Product[] = [];
+    const failedProducts: Product[] = [];
+
+    for (const product of toSave) {
         try {
-            const savedProducts: Product[] = [];
-            for (const product of toSave) {
-                const saved = await createProductApi({
-                    name: product.name,
-                    description: product.description,
-                    price: product.price,
-                    category: product.category,
-                    pictureUrl: product.pictureUrl
-                });
-                savedProducts.push(saved);
-            }
-
-            setProducts(prev => [...prev, ...savedProducts]);
-            setCsvProducts([]);
-            setSelectedIds(new Set());
-            setError("");
-            alert("Produtos salvos com sucesso!");
-            navigate("/");
+        const saved = await createProductApi({
+            name: product.name,
+            description: product.description,
+            price: product.price,
+            category: product.category,
+            pictureUrl: product.pictureUrl
+        });
+        savedProducts.push(saved);
         } catch (err) {
-            console.error(err);
-            setError("Erro ao salvar produtos na API");
+        console.error("Erro ao salvar produto:", product.name, err);
+        failedProducts.push(product);
         }
-    };
+    }
+    setProducts(prev => [...prev, ...savedProducts]);
+    setCsvProducts(failedProducts);
+    setSelectedIds(new Set());
+    setError(failedProducts.length > 0 ? "Alguns produtos não foram salvos" : "");
+    alert("Produtos processados!");
+    if (failedProducts.length === 0) navigate("/");
+};
 
     return (
         <div className='UploadProdutos'>

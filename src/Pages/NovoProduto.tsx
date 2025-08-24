@@ -3,6 +3,7 @@ import Button from "../Components/Button";
 import "./NovoProduto.css";
 import { useNavigate } from "react-router";
 import { useProducts } from '../ProductsContext';
+import { createProductApi } from "../ProductsApi";
 
 
 function NovoProduto() {
@@ -48,16 +49,30 @@ function NovoProduto() {
     const navigate = useNavigate();
     const { products, setProducts } = useProducts();
 
-    const criarProduto = (e: React.FormEvent) => {
+    const criarProduto = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validarForm()) return;
-        
-        const novoProduto = { id: Date.now(), name, price: parseFloat(price), category, description, pictureUrl: pictureUrl || "/logo192.png" };
 
-        setProducts((prevProducts) => [...prevProducts, novoProduto]);
-        navigate('/');
-    };    
+        try {
+            // Cria na API
+            const savedProduct = await createProductApi({
+                name,
+                description,
+                price: parseFloat(price),
+                category,
+                pictureUrl: pictureUrl || "/logo192.png"
+            });
+
+            // Atualiza o state global
+            setProducts(prev => [...prev, savedProduct]);
+
+            navigate('/');
+        } catch (err) {
+            console.error("Erro ao criar produto:", err);
+            alert("Não foi possível salvar o produto na API");
+        }
+    }; 
 
 
     return (

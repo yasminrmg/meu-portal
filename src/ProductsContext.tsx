@@ -66,6 +66,7 @@ export function ProductsProvider({
   };
 
   const updateProduct = async (id: number, updated: Partial<Product>) => {
+    
     try {
       const saved = await updateProductApi(id, updated);
       setProducts(prev => prev.map(p => (p.id === id ? saved : p)));

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Button from "../Components/Button";
-import "./NovoProduto.css"; // podemos reaproveitar o CSS do formulário de cadastro
+import "./NovoProduto.css"; // reaproveitando o CSS do formulário de cadastro
 import { useNavigate, useParams } from "react-router";
 import { useProducts } from "../ProductsContext";
 
 function EditarProduto() {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const { products, setProducts } = useProducts();
+    const { products, updateProduct } = useProducts();
 
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
@@ -58,26 +58,31 @@ function EditarProduto() {
         return valido;
     };
 
-    const salvarEdicao = (e: React.FormEvent) => {
+    const salvarEdicao = async (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validarForm()) return;
+        if (!id) return;
 
-        setProducts((prevProducts) =>
-            prevProducts.map((p) =>
-                p.id === Number(id)
-                    ? { ...p, name, price: parseFloat(price), category, description, pictureUrl }
-                    : p
-            )
-        );
-
-        navigate("/");
+        try {
+            await updateProduct(Number(id), {
+                name,
+                price: parseFloat(price),
+                category,
+                description,
+                pictureUrl
+            });
+            alert("Produto atualizado com sucesso!");
+            navigate("/");
+        } catch (error) {
+            console.error("Erro ao atualizar produto:", error);
+            alert("Erro ao atualizar produto. Tente novamente.");
+        }
     };
 
     return (
-        <div className="EditarProdutoo">
+        <div className="EditarProduto">
             <h2>Editar Produto</h2>
-
             <div className="formProduto-container">
                 <form onSubmit={salvarEdicao} className="form-produto">
                     <label htmlFor="nome">Nome</label>
