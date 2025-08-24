@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "../Components/Button";
-import "./NovoProduto.css";
-import { useNavigate } from "react-router";
-import { useProducts } from '../ProductsContext';
+import "./NovoProduto.css"; // podemos reaproveitar o CSS do formulário de cadastro
+import { useNavigate, useParams } from "react-router";
+import { useProducts } from "../ProductsContext";
 
+function EditarProduto() {
+    const { id } = useParams<{ id: string }>();
+    const navigate = useNavigate();
+    const { products, setProducts } = useProducts();
 
-function NovoProduto() {
     const [name, setName] = useState("");
     const [price, setPrice] = useState("");
     const [category, setCategory] = useState("");
@@ -18,6 +21,17 @@ function NovoProduto() {
         category: "",
         description: ""
     });
+
+    useEffect(() => {
+        const produto = products.find((p) => p.id === Number(id));
+        if (produto) {
+            setName(produto.name);
+            setPrice(produto.price.toString());
+            setCategory(produto.category);
+            setDescription(produto.description);
+            setPictureUrl(produto.pictureUrl);
+        }
+    }, [id, products]);
 
     const validarForm = () => {
         const newErrors: typeof errors = { name: "", price: "", category: "", description: "" };
@@ -44,32 +58,28 @@ function NovoProduto() {
         return valido;
     };
 
-    
-    const navigate = useNavigate();
-    const { products, setProducts } = useProducts();
-
-    const criarProduto = (e: React.FormEvent) => {
+    const salvarEdicao = (e: React.FormEvent) => {
         e.preventDefault();
 
         if (!validarForm()) return;
-        
-        const novoProduto = { id: Date.now(), name, price: parseFloat(price), category, description, pictureUrl: pictureUrl || "/logo192.png" };
 
-        setProducts((prevProducts) => [...prevProducts, novoProduto]);
-        navigate('/');
-    };    
+        setProducts((prevProducts) =>
+            prevProducts.map((p) =>
+                p.id === Number(id)
+                    ? { ...p, name, price: parseFloat(price), category, description, pictureUrl }
+                    : p
+            )
+        );
 
+        navigate("/");
+    };
 
     return (
-        <div className="novo-produto">
-            <h2>Cadastrar Novo Produto</h2>
-
-            <Button
-                text="Importar produtos CSV" buttonType="salvar" onClick={() => navigate("/uploadProdutos")}
-            />
+        <div className="EditarProdutoo">
+            <h2>Editar Produto</h2>
 
             <div className="formProduto-container">
-                <form onSubmit={criarProduto} className="form-produto">
+                <form onSubmit={salvarEdicao} className="form-produto">
                     <label htmlFor="nome">Nome</label>
                     <input id="nome" type="text" value={name} onChange={(e) => setName(e.target.value)} />
                     {errors.name && <span className="error">{errors.name}</span>}
@@ -90,7 +100,7 @@ function NovoProduto() {
                     <input id="pictureUrl" type="text" value={pictureUrl} onChange={(e) => setPictureUrl(e.target.value)} />
 
                     <div className="button-actions">
-                        <Button text="Salvar Produto" buttonType="salvar" type="submit"/>
+                        <Button text="Salvar Alterações" buttonType="salvar" type="submit"/>
                         <Button text="Cancelar" buttonType="cancelar" onClick={() => navigate("/")}/>
                     </div>
                 </form>
@@ -99,4 +109,4 @@ function NovoProduto() {
     );
 }
 
-export default NovoProduto;
+export default EditarProduto;

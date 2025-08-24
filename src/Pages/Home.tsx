@@ -12,11 +12,21 @@ type ContextType = {
 
 
 function Home(){
-    const { products } = useProducts();
+    const { products,  deleteProduct } = useProducts();
     const { searchTerm } = useOutletContext<ContextType>();
     const navigate = useNavigate();
 
     const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
+
+    const handleDelete = (id: number) => {
+        if (window.confirm("Deseja realmente excluir este produto?")) {
+            deleteProduct(id);
+        }
+    };
+
+    const handleEdit = (id: number) => {
+        navigate(`/editarProduto/${id}`);
+    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -50,8 +60,8 @@ function Home(){
                             <p className='product-category'>{product.category}</p>
                             <p className='product-price'>R$ {product.price.toFixed(2)}</p>
                             <div className='button-action'>
-                                <Button text="Editar" buttonType="editar"/>
-                                <Button text="Excluir" buttonType="deletar"/>
+                                <Button text="Editar" buttonType="editar" onClick={() => handleEdit(product.id)}/>
+                                <Button text="Excluir" buttonType="deletar" onClick={() => handleDelete(product.id)}/>
                             </div>
                     </Card>
                 ))}

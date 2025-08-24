@@ -1,4 +1,5 @@
-import { createContext, useContext, Dispatch, SetStateAction, useState } from "react";
+import { createContext, useContext, Dispatch, SetStateAction, useState, useEffect  } from "react";
+import { fetchProducts, deleteProductApi, updateProductApi } from "./ProductsApi"
 
 export type Product = {
   id: number;
@@ -14,6 +15,8 @@ export type Product = {
 type ProductsContextType = {
   products: Product[];
   setProducts: Dispatch<SetStateAction<Product[]>>;
+  deleteProduct: (id: number) => Promise<void>;
+  updateProduct: (id: number, updated: Partial<Product>) => Promise<void>;
 };
 
 const ProductsContext = createContext<ProductsContextType | undefined>(
@@ -32,8 +35,22 @@ export function useProducts() {
 export function ProductsProvider({ children, initialProducts  }: { children: React.ReactNode; initialProducts: Product[] }) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
 
+  useEffect(() => {
+    fetchProducts().then(setProducts);
+  }, []);
+
+  const deleteProduct = async (id: number) => {
+    await deleteProductApi(id);
+    setProducts(prev => prev.filter(p => p.id !== id));
+  };
+
+  const updateProduct = async (id: number, updated: Partial<Product>) => {
+    const saved = await updateProductApi(id, updated);
+    setProducts(prev => prev.map(p => (p.id === id ? saved : p)));
+  };
+
   return (
-    <ProductsContext.Provider value={{ products, setProducts }}>
+    <ProductsContext.Provider value={{ products, setProducts, deleteProduct, updateProduct }}>
       {children}
     </ProductsContext.Provider>
   );

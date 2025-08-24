@@ -5,6 +5,7 @@ import Home from './Pages/Home';
 import NovoProduto from './Pages/NovoProduto';
 import { ProductsProvider, Product } from "./ProductsContext";
 import UploadProdutos from './Pages/UploadProdutos';
+import EditarProduto from './Pages/EditarProduto';
 
 const productsLoader = async()=>{
   const response = await fetch('/data/data.json');
@@ -38,7 +39,9 @@ const router = createBrowserRouter([
       { 
         path: '/uploadProdutos', 
         Component: UploadProdutos
-      }
+      },{
+        path:'/editarProduto/:id',
+        Component:EditarProduto}
     ]
   },
 ]);
