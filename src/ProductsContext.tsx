@@ -1,5 +1,6 @@
 import { createContext, useContext, Dispatch, SetStateAction, useState, useEffect  } from "react";
-import { fetchProducts, deleteProductApi, updateProductApi } from "./ProductsApi"
+import { fetchProducts, deleteProductApi, updateProductApi, createProductApi  } from "./ProductsApi"
+
 
 export type Product = {
   id: number;
@@ -11,12 +12,13 @@ export type Product = {
 };
 
 
-
 type ProductsContextType = {
   products: Product[];
   setProducts: Dispatch<SetStateAction<Product[]>>;
   deleteProduct: (id: number) => Promise<void>;
   updateProduct: (id: number, updated: Partial<Product>) => Promise<void>;
+  createProduct: (product: Omit<Product, "id">) => Promise<void>;
+  reloadProducts: () => Promise<void>;
 };
 
 const ProductsContext = createContext<ProductsContextType | undefined>(
@@ -32,25 +34,57 @@ export function useProducts() {
 }
 
 
-export function ProductsProvider({ children, initialProducts  }: { children: React.ReactNode; initialProducts: Product[] }) {
+export function ProductsProvider({ 
+    children, 
+    initialProducts  
+  }: { 
+    children: React.ReactNode; 
+    initialProducts: Product[] 
+  }) {
   const [products, setProducts] = useState<Product[]>(initialProducts);
 
+  const reloadProducts = async () => {
+      try {
+        const data = await fetchProducts();
+        setProducts(data);
+      } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+      }
+  };
+
   useEffect(() => {
-    fetchProducts().then(setProducts);
+    reloadProducts();
   }, []);
 
   const deleteProduct = async (id: number) => {
-    await deleteProductApi(id);
-    setProducts(prev => prev.filter(p => p.id !== id));
+    try {
+      await deleteProductApi(id);
+      setProducts(prev => prev.filter(p => p.id !== id));
+    } catch (error) {
+      console.error("Erro ao deletar produto:", error);
+    }
   };
 
   const updateProduct = async (id: number, updated: Partial<Product>) => {
-    const saved = await updateProductApi(id, updated);
-    setProducts(prev => prev.map(p => (p.id === id ? saved : p)));
+    try {
+      const saved = await updateProductApi(id, updated);
+      setProducts(prev => prev.map(p => (p.id === id ? saved : p)));
+    } catch (error) {
+      console.error("Erro ao atualizar produto:", error);
+    }
+  };
+
+  const createProduct = async (product: Omit<Product, "id">) => {
+    try {
+      const saved = await createProductApi(product);
+      setProducts(prev => [...prev, saved]);
+    } catch (error) {
+      console.error("Erro ao criar produto:", error);
+    }
   };
 
   return (
-    <ProductsContext.Provider value={{ products, setProducts, deleteProduct, updateProduct }}>
+    <ProductsContext.Provider value={{ products, setProducts, deleteProduct, updateProduct, createProduct, reloadProducts }}>
       {children}
     </ProductsContext.Provider>
   );
